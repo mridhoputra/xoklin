@@ -14,7 +14,7 @@ const formatRupiah = (value) => {
     rupiah = split[1] !== undefined ? rupiah + ',' + split[1] : rupiah
     return rupiah ? 'Rp' + rupiah : 0
   } else {
-    return 'Tidak ada'
+    return 'Rp. 0'
   }
 }
 
