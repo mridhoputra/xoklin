@@ -89,7 +89,7 @@ const ChooseLocation = () => {
     }
   }
 
-  const setCoordinate = () => {
+  const onComplete = () => {
     navigation.navigate({ name: 'UserChooseItem', params: { coordinate: position }, merge: true })
   }
 
@@ -129,7 +129,7 @@ const ChooseLocation = () => {
         </View>
       </View>
       <View style={styles.containerButton}>
-        <Button label='SET PICKUP' width='92%' onPress={setCoordinate}/>
+        <Button label='SET PICKUP' width='92%' onPress={onComplete}/>
       </View>
     </View>
   )

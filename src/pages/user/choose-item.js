@@ -4,8 +4,11 @@ import { Colors } from '../../assets'
 import { StyleSheet, Text, View, Image, ScrollView, TouchableOpacity } from 'react-native'
 import formatRupiah from '../../utils/formatRupiah'
 import Button from '../../components/button'
+import { useNavigation } from '@react-navigation/native'
 
 const ChooseItem = (props) => {
+  const navigation = useNavigation()
+
   const { coordinate } = props.route.params ?? {}
 
   const [order, setOrder] = useState([])
@@ -95,6 +98,18 @@ const ChooseItem = (props) => {
     setAmount(tempAmount)
   }, [order])
 
+  const onComplete = () => {
+    const dataOrder = {
+      address: coordinate.address,
+      longitude: coordinate.longitude,
+      latitude: coordinate.latitude,
+      order,
+      subtotal: amount,
+      userId: 'userId here'
+    }
+    navigation.navigate({ name: 'UserCartDetail', params: { dataOrder }, merge: true })
+  }
+
   return (
     <View style={styles.page}>
       <Image source={require('../../assets/images/bg_user_order.png')} style={styles.imgHeader}/>
@@ -126,7 +141,7 @@ const ChooseItem = (props) => {
       <View style={styles.containerTotal}>
         <Text style={styles.labelTotal}>Total: <Text style={styles.textTotal}>{formatRupiah(amount)}</Text></Text>
         <View>
-          <Button label='Add to Cart' width={140}/>
+          <Button label='Add to Cart' width={140} onPress={onComplete}/>
         </View>
       </View>
     </View>
@@ -188,7 +203,8 @@ const styles = StyleSheet.create({
     color: Colors.primary
   },
   containerCounter: {
-    flexDirection: 'row'
+    flexDirection: 'row',
+    alignItems: 'center'
   },
   btnCount: {
     backgroundColor: Colors.primary,
@@ -196,10 +212,13 @@ const styles = StyleSheet.create({
     height: 24,
     width: 24,
     alignItems: 'center',
+    justifyContent: 'center',
     borderRadius: 6
   },
   textOperation: {
-    color: Colors.white
+    color: Colors.white,
+    fontFamily: 'Nunito-Regular',
+    includeFontPadding: false
   },
   textCount: {
     fontFamily: 'Nunito-Regular',
