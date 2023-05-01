@@ -50,12 +50,10 @@ const Register = () => {
                 'Content-Type': 'application/json'
               }
             }
-            console.log(response.data)
             try {
               const responseProfile = await axios.get(`${XOKLIN_ENDPOINT}/auth/me`, header)
 
               if (responseProfile.status === 200) {
-                console.log(responseProfile.data)
                 navigation.reset({ index: 0, routes: [{ name: 'UserHome' }] })
               }
             } catch (e) {
@@ -68,7 +66,6 @@ const Register = () => {
           }
           await dispatch({ type: 'SET_LOADING', value: false })
         } catch (e) {
-          console.log(e.response.data)
           await dispatch({ type: 'SET_LOADING', value: false })
           if (e.response.data?.message) {
             ToastAndroid.show(e.response.data.message, ToastAndroid.LONG)

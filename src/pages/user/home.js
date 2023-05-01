@@ -28,8 +28,6 @@ const UserHome = () => {
     }
   }
 
-  console.log(userData)
-
   return (
     <ScrollView style={styles.page}>
       <ImageBackground source={require('../../assets/images/bg_user_home.png')} style={styles.header}>
@@ -57,6 +55,7 @@ const UserHome = () => {
           <Menu
             label='Cart'
             image={require('../../assets/images/icon_cart.png')}
+            onPress={() => navigation.navigate('UserCart')}
           />
           <Gap width={16} />
           <Menu

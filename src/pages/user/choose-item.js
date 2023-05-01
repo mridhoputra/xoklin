@@ -5,15 +5,17 @@ import { StyleSheet, Text, View, Image, ScrollView, TouchableOpacity, ToastAndro
 import formatRupiah from '../../utils/formatRupiah'
 import Button from '../../components/button'
 import { useNavigation } from '@react-navigation/native'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import axios from 'axios'
 import { XOKLIN_ENDPOINT, XOKLIN_URL } from '@env'
 
 const ChooseItem = (props) => {
+  const dispatch = useDispatch()
   const navigation = useNavigation()
 
   const { coordinate } = props.route.params ?? {}
   const { userData } = useSelector(state => state.UserReducer)
+  const { cartData } = useSelector(state => state.CartReducer)
 
   const [order, setOrder] = useState([])
   const [amount, setAmount] = useState(0)
@@ -94,6 +96,12 @@ const ChooseItem = (props) => {
     }
   }
 
+  const handleAddCart = async (dataOrder) => {
+    let tempCart = cartData
+    tempCart = [...tempCart, dataOrder]
+    await dispatch({ type: 'SET_CART', cart: tempCart })
+  }
+
   const onComplete = () => {
     const dataOrder = {
       address: coordinate.address,
@@ -103,6 +111,7 @@ const ChooseItem = (props) => {
       subtotal: amount,
       userId: userData.idUser
     }
+    handleAddCart(dataOrder)
     navigation.navigate({ name: 'UserCartDetail', params: { dataOrder }, merge: true })
   }
 

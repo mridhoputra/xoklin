@@ -30,8 +30,6 @@ const CardDetail = (props) => {
       ammount: dataOrder.subtotal + deliveryFee
     }
 
-    console.log(body)
-
     const header = {
       headers: {
         Accept: 'application/json',
@@ -44,14 +42,12 @@ const CardDetail = (props) => {
       await dispatch({ type: 'SET_LOADING', value: true })
       const response = await axios.post(`${XOKLIN_ENDPOINT}/orders`, body, header)
       if (response.status === 200) {
-        console.log(response.data)
         toggleModalVisibility()
       }
       await dispatch({ type: 'SET_LOADING', value: false })
     } catch (e) {
       await dispatch({ type: 'SET_LOADING', value: false })
       if (e.response.data?.message) {
-        console.log(e.response.data)
         ToastAndroid.show(e.response.data.message, ToastAndroid.LONG)
       } else {
         ToastAndroid.show('Something went wrong', ToastAndroid.LONG)

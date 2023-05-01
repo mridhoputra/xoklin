@@ -14,6 +14,7 @@ import ChooseItem from './user/choose-item'
 import CartDetail from './user/cart-detail'
 import UserProfile from './user/profile'
 import ViewLocation from './user/view-location'
+import Cart from './user/cart'
 
 const Stack = createStackNavigator()
 
@@ -46,12 +47,20 @@ const Navigation = () => {
           component={UserHome}
         />
         <Stack.Screen
+          name='UserChooseLocation'
+          component={ChooseLocation}
+        />
+        <Stack.Screen
           name='UserOrderHistory'
           component={UserOrderHistory}
         />
         <Stack.Screen
-          name='UserChooseLocation'
-          component={ChooseLocation}
+          name='UserCart'
+          component={Cart}
+        />
+        <Stack.Screen
+          name='UserProfile'
+          component={UserProfile}
         />
         <Stack.Screen
           name='UserChooseItem'
@@ -60,10 +69,6 @@ const Navigation = () => {
         <Stack.Screen
           name='UserCartDetail'
           component={CartDetail}
-        />
-        <Stack.Screen
-          name='UserProfile'
-          component={UserProfile}
         />
         <Stack.Screen
           name='UserViewLocation'
