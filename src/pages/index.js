@@ -1,4 +1,4 @@
-import { View } from 'react-native'
+import { ToastAndroid, View } from 'react-native'
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { createStackNavigator } from '@react-navigation/stack'
@@ -12,6 +12,8 @@ import UserOrderHistory from './user/order-history'
 import ChooseLocation from './user/choose-location'
 import ChooseItem from './user/choose-item'
 import CartDetail from './user/cart-detail'
+import UserProfile from './user/profile'
+import ViewLocation from './user/view-location'
 
 const Stack = createStackNavigator()
 
@@ -59,6 +61,14 @@ const Navigation = () => {
           name='UserCartDetail'
           component={CartDetail}
         />
+        <Stack.Screen
+          name='UserProfile'
+          component={UserProfile}
+        />
+        <Stack.Screen
+          name='UserViewLocation'
+          component={ViewLocation}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   )
@@ -79,48 +89,21 @@ const RootNavigation = () => {
 
   const { isLogin, userData } = useSelector(state => state.UserReducer)
 
-  console.log(isLogin)
-  console.log(userData)
-
   useEffect(() => {
     dispatch({ type: 'SET_LOADING', value: false })
   }, [])
 
   useEffect(() => {
-    navigation.reset({ index: 0, routes: [{ name: 'WelcomeScreen' }] })
+    if (isLogin) {
+      if (userData.role === 'ROLE_USER') {
+        navigation.reset({ index: 0, routes: [{ name: 'UserHome' }] })
+      } else if (userData.role === 'ROLE_ADMIN') {
+        ToastAndroid.show('ADMIN', ToastAndroid.LONG)
+      }
+    } else {
+      navigation.reset({ index: 0, routes: [{ name: 'WelcomeScreen' }] })
+    }
   })
-
-  //   useEffect(() => {
-  //     if (isLogin) {
-  //       if (userData) {
-  //         if (userData.isProfileEdited) {
-  //           if (userData.isEmployee) {
-  //             if (userData.isAdmin || userData.isSuperAdmin) {
-  //               navigation.reset({ index: 0, routes: [{ name: 'AdminNavigation' }] })
-  //             } else {
-  //               if (userData.isOperator || userData.isApprover || userData.isSigner) {
-  //                 navigation.reset({ index: 0, routes: [{ name: 'AdminNavigation' }] })
-  //               } else {
-  //                 navigation.reset({ index: 0, routes: [{ name: 'UserNavigation' }] })
-  //               }
-  //             }
-  //           } else {
-  //             if (userData.isAdmin || userData.isSuperAdmin) {
-  //               navigation.reset({ index: 0, routes: [{ name: 'AdminNavigation' }] })
-  //             } else {
-  //               navigation.reset({ index: 0, routes: [{ name: 'UserNavigation' }] })
-  //             }
-  //           }
-  //         } else {
-  //           navigation.reset({ index: 0, routes: [{ name: 'PublicNavigation', state: { routes: [{ name: 'ProfileAddCitizen' }] } }] })
-  //         }
-  //       } else {
-  //         navigation.reset({ index: 0, routes: [{ name: 'PublicNavigation' }] })
-  //       }
-  //     } else {
-  //       navigation.reset({ index: 0, routes: [{ name: 'PublicNavigation' }] })
-  //     }
-  //   }, [])
 
   return (
     <View style={{ flex: 1, backgroundColor: Colors.white }}>

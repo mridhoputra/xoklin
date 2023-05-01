@@ -6,8 +6,11 @@ import Menu from '../../components/menu'
 import Gap from '../../components/gap'
 import CardActiveOrder from '../../components/card-active-order'
 import { useNavigation } from '@react-navigation/native'
+import { useSelector } from 'react-redux'
 
 const UserHome = () => {
+  const { userData } = useSelector(state => state.UserReducer)
+
   const navigation = useNavigation()
 
   const formatGreeting = () => {
@@ -25,11 +28,13 @@ const UserHome = () => {
     }
   }
 
+  console.log(userData)
+
   return (
     <ScrollView style={styles.page}>
       <ImageBackground source={require('../../assets/images/bg_user_home.png')} style={styles.header}>
         <Text style={styles.titleHeader}>{formatGreeting()}</Text>
-        <Text style={styles.subtitleHeader}>Mr. Harry Maguire</Text>
+        <Text style={styles.subtitleHeader}>{userData.fullname}</Text>
       </ImageBackground>
       <View style={styles.containerMenus}>
         <Text style={styles.titleMenus}>Let's book a laundry service today!</Text>
@@ -57,6 +62,7 @@ const UserHome = () => {
           <Menu
             label='Profile'
             image={require('../../assets/images/icon_profile.png')}
+            onPress={() => navigation.navigate('UserProfile')}
           />
         </View>
       </View>

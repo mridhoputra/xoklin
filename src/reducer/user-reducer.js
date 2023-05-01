@@ -15,16 +15,14 @@ const clearAsyncStorage = async () => {
 
 const UserReducer = (state = initialState, action) => {
   switch (action.type) {
-  case 'SIGN_IN':
+  case 'LOGIN':
     setToAsyncStorage('userData', action.user)
     return {
       ...state,
       isLogin: true,
-      userData: action.user,
-      citizenData: action.citizen,
-      employeeData: action.employee
+      userData: action.user
     }
-  case 'SIGN_OUT':
+  case 'LOGOUT':
     clearAsyncStorage()
     return {
       ...initialState

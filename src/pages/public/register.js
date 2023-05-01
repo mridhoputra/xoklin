@@ -1,10 +1,14 @@
-import { Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import { Image, ScrollView, StyleSheet, Text, TextInput, ToastAndroid, TouchableOpacity, View } from 'react-native'
 import React, { useState } from 'react'
 import Gap from '../../components/gap'
 import Button from '../../components/button'
 import { useNavigation } from '@react-navigation/native'
+import axios from 'axios'
+import { XOKLIN_ENDPOINT } from '@env'
+import { useDispatch } from 'react-redux'
 
 const Register = () => {
+  const dispatch = useDispatch()
   const navigation = useNavigation()
 
   const [username, setUsername] = useState('')
@@ -15,6 +19,70 @@ const Register = () => {
   const [phoneNumber, setPhoneNumber] = useState('')
   const [hidden, setHidden] = useState(true)
   const [confirmHidden, setConfirmHidden] = useState(true)
+
+  const onSubmit = async () => {
+    if (username !== '' && password !== '' && confirmPassword !== '' && fullname !== '' && email !== '' && phoneNumber !== '') {
+      if (password === confirmPassword) {
+        const body = {
+          fullname,
+          email,
+          username,
+          password,
+          confPassword: confirmPassword,
+          phone: phoneNumber
+        }
+        const header = {
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json'
+          }
+        }
+        try {
+          await dispatch({ type: 'SET_LOADING', value: true })
+
+          const response = await axios.post(`${XOKLIN_ENDPOINT}/auth/register`, body, header)
+
+          if (response.status === 200) {
+            const header = {
+              headers: {
+                Authorization: `Bearer ${response.data.token}`,
+                Accept: 'application/json',
+                'Content-Type': 'application/json'
+              }
+            }
+            console.log(response.data)
+            try {
+              const responseProfile = await axios.get(`${XOKLIN_ENDPOINT}/auth/me`, header)
+
+              if (responseProfile.status === 200) {
+                console.log(responseProfile.data)
+                navigation.reset({ index: 0, routes: [{ name: 'UserHome' }] })
+              }
+            } catch (e) {
+              if (e.response.data?.message) {
+                ToastAndroid.show(e.response.data.message, ToastAndroid.LONG)
+              } else {
+                ToastAndroid.show('Something went wrong', ToastAndroid.LONG)
+              }
+            }
+          }
+          await dispatch({ type: 'SET_LOADING', value: false })
+        } catch (e) {
+          console.log(e.response.data)
+          await dispatch({ type: 'SET_LOADING', value: false })
+          if (e.response.data?.message) {
+            ToastAndroid.show(e.response.data.message, ToastAndroid.LONG)
+          } else {
+            ToastAndroid.show('Something went wrong', ToastAndroid.LONG)
+          }
+        }
+      } else {
+        ToastAndroid.show('Password not match', ToastAndroid.LONG)
+      }
+    } else {
+      ToastAndroid.show('Please fill the username and password form above', ToastAndroid.LONG)
+    }
+  }
 
   return (
     <ScrollView contentContainerStyle={styles.page}>
@@ -34,6 +102,7 @@ const Register = () => {
         value={email}
         style={styles.textInput}
         placeholder='Email'
+        autoCapitalize='none'
         keyboardType='email-address'
         onChangeText={(value) => setEmail(value)}
       />
@@ -41,6 +110,7 @@ const Register = () => {
       <TextInput
         value={username}
         style={styles.textInput}
+        autoCapitalize='none'
         placeholder='Username'
         onChangeText={(value) => setUsername(value)}
       />
@@ -49,6 +119,7 @@ const Register = () => {
         <TextInput
           value={password}
           style={styles.textInputPassword}
+          autoCapitalize='none'
           placeholder='Password'
           secureTextEntry={hidden}
           onChangeText={(value) => setPassword(value)}
@@ -62,6 +133,7 @@ const Register = () => {
         <TextInput
           value={confirmPassword}
           style={styles.textInputPassword}
+          autoCapitalize='none'
           placeholder='Confirm Password'
           secureTextEntry={confirmHidden}
           onChangeText={(value) => setConfirmPassword(value)}
@@ -79,7 +151,7 @@ const Register = () => {
         onChangeText={(value) => setPhoneNumber(value)}
       />
       <Gap height={40}/>
-      <Button label='Register' onPress={() => navigation.reset({ index: 0, routes: [{ name: 'UserHome' }] })}/>
+      <Button label='Register' onPress={onSubmit}/>
     </ScrollView>
   )
 }

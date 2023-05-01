@@ -1,15 +1,20 @@
 import PropTypes from 'prop-types'
-import { Image, Modal, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { Image, Modal, ScrollView, StyleSheet, Text, ToastAndroid, TouchableOpacity, View } from 'react-native'
 import React, { useState } from 'react'
 import { useNavigation } from '@react-navigation/native'
 import { Colors } from '../../assets'
 import Gap from '../../components/gap'
 import Button from '../../components/button'
 import formatRupiah from '../../utils/formatRupiah'
+import { useDispatch, useSelector } from 'react-redux'
+import axios from 'axios'
+import { XOKLIN_ENDPOINT } from '@env'
 
 const CardDetail = (props) => {
   const { dataOrder } = props.route.params ?? {}
+  const { userData } = useSelector(state => state.UserReducer)
 
+  const dispatch = useDispatch()
   const navigation = useNavigation()
   const [modalVisible, setModalVisibile] = useState(false)
 
@@ -19,11 +24,48 @@ const CardDetail = (props) => {
     setModalVisibile(!modalVisible)
   }
 
-  const onSubmit = () => {
-    toggleModalVisibility()
-    const body = dataOrder
-    dataOrder.amount = dataOrder.subtotal + deliveryFee
-    console.log(dataOrder)
+  const onSubmit = async () => {
+    const body = {
+      ...dataOrder,
+      ammount: dataOrder.subtotal + deliveryFee
+    }
+
+    console.log(body)
+
+    const header = {
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${userData.token}`
+      }
+    }
+
+    try {
+      await dispatch({ type: 'SET_LOADING', value: true })
+      const response = await axios.post(`${XOKLIN_ENDPOINT}/orders`, body, header)
+      if (response.status === 200) {
+        console.log(response.data)
+        toggleModalVisibility()
+      }
+      await dispatch({ type: 'SET_LOADING', value: false })
+    } catch (e) {
+      await dispatch({ type: 'SET_LOADING', value: false })
+      if (e.response.data?.message) {
+        console.log(e.response.data)
+        ToastAndroid.show(e.response.data.message, ToastAndroid.LONG)
+      } else {
+        ToastAndroid.show('Something went wrong', ToastAndroid.LONG)
+      }
+    }
+  }
+
+  const navigateToSeeLocation = () => {
+    const coordinate = {
+      latitude: dataOrder.latitude,
+      longitude: dataOrder.longtitude,
+      address: dataOrder.address
+    }
+    navigation.navigate({ name: 'UserViewLocation', params: { coordinate }, merge: true })
   }
 
   const navigateToHome = () => {
@@ -44,14 +86,14 @@ const CardDetail = (props) => {
         <View style={styles.containerProfile}>
           <Image source={require('../../assets/images/avatar.png')} style={styles.avatar}/>
           <View style={styles.containerProfileDetail}>
-            <Text style={styles.profileName}>Mr. Harry Maguire</Text>
-            <Text style={styles.profileNumber}>085789012345</Text>
+            <Text style={styles.profileName}>{userData.fullname}</Text>
+            <Text style={styles.profileNumber}>{userData.phone}</Text>
           </View>
         </View>
         <View style={styles.containerProfileLocation}>
           <Text style={styles.profileLabel}>Address:</Text>
           <Text style={styles.profileAddress}>{dataOrder.address}</Text>
-          <TouchableOpacity activeOpacity={0.6}>
+          <TouchableOpacity activeOpacity={0.6} onPress={navigateToSeeLocation}>
             <Text style={styles.textLink}>See Location</Text>
           </TouchableOpacity>
         </View>
@@ -108,9 +150,8 @@ const CardDetail = (props) => {
         animationType='slide'
         transparent={true}
         visible={modalVisible}
-        onRequestClose={toggleModalVisibility}
       >
-        <TouchableOpacity activeOpacity={1} onPress={toggleModalVisibility} style={styles.modal}>
+        <View activeOpacity={1} style={styles.modal}>
           <View style={styles.containerModal}>
             <View style={styles.containerImage}>
               <Image source={require('../../assets/images/icon_success_white.png')} />
@@ -119,7 +160,7 @@ const CardDetail = (props) => {
             <Text style={styles.subtitleModal}>Thank you for using our service. We will contact you soon to pick up your items.</Text>
             <Button label='BACK TO HOME' onPress={navigateToHome}/>
           </View>
-        </TouchableOpacity>
+        </View>
       </Modal>
     </ScrollView>
   )
