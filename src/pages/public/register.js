@@ -54,6 +54,17 @@ const Register = () => {
               const responseProfile = await axios.get(`${XOKLIN_ENDPOINT}/auth/me`, header)
 
               if (responseProfile.status === 200) {
+                const dataProfile = responseProfile.data.data
+                const user = {
+                  idUser: dataProfile.idUser,
+                  username: dataProfile.username,
+                  email: dataProfile.email,
+                  fullname: dataProfile.fullname,
+                  phone: dataProfile.phone,
+                  role: dataProfile.role,
+                  token: response.data.token
+                }
+                await dispatch({ type: 'LOGIN', user })
                 navigation.reset({ index: 0, routes: [{ name: 'UserHome' }] })
               }
             } catch (e) {
