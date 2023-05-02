@@ -41,29 +41,23 @@ const ChooseLocation = () => {
   }
 
   const setAddressLocation = async (altitude, latitude, longitude, latitudeDelta, longitudeDelta) => {
+    setPosition(state => ({
+      ...state,
+      altitude,
+      latitude,
+      longitude,
+      latitudeDelta,
+      longitudeDelta
+    }))
     try {
       const response = await axios.get(`https://maps.google.com/maps/api/geocode/json?address=${latitude},${longitude}&key=${GOOGLE_MAPS_API_KEY}`)
       const resultAddress = response?.data?.results[0]?.formatted_address
       setPosition(state => ({
         ...state,
-        altitude,
-        latitude,
-        longitude,
-        latitudeDelta,
-        longitudeDelta,
         address: resultAddress
       }))
     } catch (e) {
       ToastAndroid.show('Fetch address name failed', ToastAndroid.LONG)
-      setPosition(state => ({
-        ...state,
-        altitude,
-        latitude,
-        longitude,
-        latitudeDelta,
-        longitudeDelta
-        // address: resultAddress
-      }))
     }
   }
 
@@ -89,7 +83,7 @@ const ChooseLocation = () => {
     }
   }
 
-  const setCoordinate = () => {
+  const onComplete = () => {
     navigation.navigate({ name: 'UserChooseItem', params: { coordinate: position }, merge: true })
   }
 
@@ -129,7 +123,7 @@ const ChooseLocation = () => {
         </View>
       </View>
       <View style={styles.containerButton}>
-        <Button label='SET PICKUP' width='92%' onPress={setCoordinate}/>
+        <Button label='SET PICKUP' width='92%' onPress={onComplete}/>
       </View>
     </View>
   )
