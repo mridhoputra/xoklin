@@ -2,6 +2,8 @@ import { Image, StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import { Colors } from '../../assets'
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs'
+import Button from '../../components/button'
+import { useNavigation } from '@react-navigation/native'
 
 const Tab = createMaterialTopTabNavigator()
 
@@ -78,9 +80,11 @@ const UserOrderHistory = () => {
 }
 
 const OngoingTab = () => {
+  const navigation = useNavigation()
   return (
-    <View>
-      <Text>OngoingTab</Text>
+    <View style={styles.emptyPage}>
+      <Text style={styles.labelEmptyPage}>There is no order</Text>
+      <Button label='ORDER NOW' width={160} onPress={() => navigation.navigate('UserChooseLocation')}/>
     </View>
   )
 }
@@ -150,5 +154,17 @@ const styles = StyleSheet.create({
   completedCancelledIcon: {
     width: 20,
     height: 20
+  },
+  emptyPage: {
+    flex: 1,
+    backgroundColor: Colors.white,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  labelEmptyPage: {
+    fontFamily: 'Nunito-Regular',
+    fontSize: 16,
+    color: Colors.textGray,
+    marginBottom: 20
   }
 })
