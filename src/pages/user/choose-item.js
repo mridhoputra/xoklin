@@ -1,45 +1,54 @@
 import React, { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import { Colors } from '../../assets'
-import { StyleSheet, Text, View, Image, ScrollView, TouchableOpacity } from 'react-native'
+import { StyleSheet, Text, View, Image, ScrollView, TouchableOpacity, ToastAndroid, ActivityIndicator } from 'react-native'
 import formatRupiah from '../../utils/formatRupiah'
 import Button from '../../components/button'
+import { useNavigation } from '@react-navigation/native'
+import { useDispatch, useSelector } from 'react-redux'
+import axios from 'axios'
+import { XOKLIN_ENDPOINT, XOKLIN_URL } from '@env'
 
 const ChooseItem = (props) => {
+  const dispatch = useDispatch()
+  const navigation = useNavigation()
+
   const { coordinate } = props.route.params ?? {}
+  const { userData } = useSelector(state => state.UserReducer)
+  const { cartData } = useSelector(state => state.CartReducer)
 
   const [order, setOrder] = useState([])
   const [amount, setAmount] = useState(0)
+  const [isLoading, setIsLoading] = useState(false)
+  const [dataItems, setDataItems] = useState([])
 
-  const dataItems = [
-    {
-      idItem: '278c79a0-d28e-11ed-bf97-838bc70500ea',
-      item: 'Baju Kaos',
-      price: 12000,
-      unit: 'pcs',
-      icon: '5be2c68410c1575caf3c25ee874b42a21680574350903.png',
-      iconUrl: '/images/icon/5be2c68410c1575caf3c25ee874b42a21680574350903.png',
-      is_active: true
-    },
-    {
-      idItem: '3e4f1470-d8df-11ed-ae8a-5f34527b5ad3',
-      item: 'kaos',
-      price: 12000,
-      unit: 'pcs',
-      icon: '5be2c68410c1575caf3c25ee874b42a21681268885300.png',
-      iconUrl: '/images/item/5be2c68410c1575caf3c25ee874b42a21681268885300.png',
-      is_active: true
-    },
-    {
-      idItem: '3e4f1470-d8df-11ed-ae8a-5f34527b5ad4',
-      item: 'Cuci Lipat',
-      price: 6000,
-      unit: 'kg',
-      icon: '5be2c68410c1575caf3c25ee874b42a21681268885300.png',
-      iconUrl: '/images/item/5be2c68410c1575caf3c25ee874b42a21681268885300.png',
-      is_active: true
+  const fetchAllItems = async () => {
+    const header = {
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${userData.token}`
+      }
     }
-  ]
+    try {
+      setIsLoading(true)
+      const response = await axios.get(`${XOKLIN_ENDPOINT}/items`, header)
+      if (response.status === 200) {
+        const result = response.data.data.map((item) => {
+          return { ...item, price: parseInt(item.price) }
+        })
+        setDataItems(result)
+      }
+      setIsLoading(false)
+    } catch (e) {
+      setIsLoading(false)
+      if (e.response.data?.message) {
+        ToastAndroid.show(e.response.data.message, ToastAndroid.LONG)
+      } else {
+        ToastAndroid.show('Something went wrong', ToastAndroid.LONG)
+      }
+    }
+  }
 
   const handleAddCount = (data) => {
     if (order.find(element => element.idItem === data.idItem)) {
@@ -87,6 +96,29 @@ const ChooseItem = (props) => {
     }
   }
 
+  const handleAddCart = async (dataOrder) => {
+    let tempCart = cartData
+    tempCart = [...tempCart, dataOrder]
+    await dispatch({ type: 'SET_CART', cart: tempCart })
+  }
+
+  const onComplete = () => {
+    const dataOrder = {
+      address: coordinate.address,
+      longtitude: coordinate.longitude,
+      latitude: coordinate.latitude,
+      order,
+      subtotal: amount,
+      userId: userData.idUser
+    }
+    handleAddCart(dataOrder)
+    navigation.navigate({ name: 'UserCartDetail', params: { dataOrder }, merge: true })
+  }
+
+  useEffect(() => {
+    fetchAllItems()
+  }, [])
+
   useEffect(() => {
     let tempAmount = 0
     order.forEach(element => {
@@ -101,32 +133,41 @@ const ChooseItem = (props) => {
       <View style={styles.containerItem}>
         <ScrollView>
           <Text style={styles.title}>Choose Item to Laundry</Text>
-          {dataItems.map((data, index) => {
-            return (
-              <View key={index} style={styles.card}>
-                <Image source={require('../../assets/images/icon_jacket.png')} style={styles.cardIcon}/>
-                <View style={styles.containerItemDetail}>
-                  <Text style={styles.textItemName}>{data.item}</Text>
-                  <Text style={styles.textItemPrice}>{formatRupiah(data.price)}/{data.unit}</Text>
-                </View>
-                <View style={styles.containerCounter}>
-                  <TouchableOpacity activeOpacity={0.6} style={styles.btnCount} onPress={() => handleSubstractCount(data)}>
-                    <Text style={styles.textOperation}>-</Text>
-                  </TouchableOpacity>
-                  <Text style={styles.textCount}>{handleTextCount(data)}</Text>
-                  <TouchableOpacity activeOpacity={0.6} style={styles.btnCount} onPress={() => handleAddCount(data)}>
-                    <Text style={styles.textOperation}>+</Text>
-                  </TouchableOpacity>
-                </View>
+          {isLoading
+            ? (
+              <View style={styles.containerLoading}>
+                <ActivityIndicator size={24} color={Colors.primary}/>
+                <Text style={styles.textLoading}>Loading...</Text>
               </View>
             )
-          })}
+            : (
+              dataItems.map((data, index) => {
+                return (
+                  <View key={index} style={styles.card}>
+                    <Image source={{ uri: `${XOKLIN_URL}/${data.iconUrl}` }} style={styles.cardIcon}/>
+                    <View style={styles.containerItemDetail}>
+                      <Text style={styles.textItemName}>{data.item}</Text>
+                      <Text style={styles.textItemPrice}>{formatRupiah(data.price)}/{data.unit}</Text>
+                    </View>
+                    <View style={styles.containerCounter}>
+                      <TouchableOpacity activeOpacity={0.6} style={styles.btnCount} onPress={() => handleSubstractCount(data)}>
+                        <Text style={styles.textOperation}>-</Text>
+                      </TouchableOpacity>
+                      <Text style={styles.textCount}>{handleTextCount(data)}</Text>
+                      <TouchableOpacity activeOpacity={0.6} style={styles.btnCount} onPress={() => handleAddCount(data)}>
+                        <Text style={styles.textOperation}>+</Text>
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+                )
+              })
+            )}
         </ScrollView>
       </View>
       <View style={styles.containerTotal}>
         <Text style={styles.labelTotal}>Total: <Text style={styles.textTotal}>{formatRupiah(amount)}</Text></Text>
         <View>
-          <Button label='Add to Cart' width={140}/>
+          <Button label='Add to Cart' width={140} onPress={onComplete}/>
         </View>
       </View>
     </View>
@@ -151,7 +192,8 @@ const styles = StyleSheet.create({
   title: {
     fontFamily: 'Nunito-Bold',
     fontSize: 16,
-    color: Colors.black
+    color: Colors.black,
+    marginBottom: 8
   },
   containerItem: {
     flex: 1,
@@ -188,7 +230,8 @@ const styles = StyleSheet.create({
     color: Colors.primary
   },
   containerCounter: {
-    flexDirection: 'row'
+    flexDirection: 'row',
+    alignItems: 'center'
   },
   btnCount: {
     backgroundColor: Colors.primary,
@@ -196,10 +239,13 @@ const styles = StyleSheet.create({
     height: 24,
     width: 24,
     alignItems: 'center',
+    justifyContent: 'center',
     borderRadius: 6
   },
   textOperation: {
-    color: Colors.white
+    color: Colors.white,
+    fontFamily: 'Nunito-Regular',
+    includeFontPadding: false
   },
   textCount: {
     fontFamily: 'Nunito-Regular',
@@ -226,5 +272,15 @@ const styles = StyleSheet.create({
     fontFamily: 'Nunito-Bold',
     fontSize: 20,
     color: Colors.black
+  },
+  containerLoading: {
+    marginTop: 24
+  },
+  textLoading: {
+    fontFamily: 'Nunito-Regular',
+    fontSize: 12,
+    textAlign: 'center',
+    color: Colors.textGray,
+    marginTop: 2
   }
 })

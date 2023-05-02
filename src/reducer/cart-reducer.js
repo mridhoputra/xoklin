@@ -1,8 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const initialState = {
-  userData: {},
-  isLogin: false
+  cartData: []
 }
 
 const setToAsyncStorage = async (type, payload) => {
@@ -13,16 +12,15 @@ const clearAsyncStorage = async () => {
   await AsyncStorage.clear()
 }
 
-const UserReducer = (state = initialState, action) => {
+const CartReducer = (state = initialState, action) => {
   switch (action.type) {
-  case 'LOGIN':
-    setToAsyncStorage('userData', action.user)
+  case 'SET_CART':
+    setToAsyncStorage('cartData', action.cart)
     return {
       ...state,
-      isLogin: true,
-      userData: action.user
+      cartData: action.cart
     }
-  case 'LOGOUT':
+  case 'CLEAR_CART':
     clearAsyncStorage()
     return {
       ...initialState
@@ -32,4 +30,4 @@ const UserReducer = (state = initialState, action) => {
   }
 }
 
-export default UserReducer
+export default CartReducer

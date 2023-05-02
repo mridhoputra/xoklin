@@ -1,15 +1,79 @@
-import { Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import { Image, StyleSheet, Text, TextInput, ToastAndroid, TouchableOpacity, View } from 'react-native'
 import React, { useState } from 'react'
 import Gap from '../../components/gap'
 import Button from '../../components/button'
 import { useNavigation } from '@react-navigation/native'
+import { useDispatch } from 'react-redux'
+import { XOKLIN_ENDPOINT } from '@env'
+import axios from 'axios'
 
 const Login = () => {
+  const dispatch = useDispatch()
   const navigation = useNavigation()
 
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [hidden, setHidden] = useState(true)
+
+  const onSubmit = async () => {
+    if (username !== '' && password !== '') {
+      try {
+        await dispatch({ type: 'SET_LOADING', value: true })
+        const body = {
+          username,
+          password
+        }
+        const header = {
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json'
+          }
+        }
+        const response = await axios.post(`${XOKLIN_ENDPOINT}/auth/login`, body, header)
+        if (response.status === 200) {
+          try {
+            const header = {
+              headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${response.data.token}`
+              }
+            }
+            const responseProfile = await axios.get(`${XOKLIN_ENDPOINT}/auth/me`, header)
+            if (responseProfile.status === 200) {
+              const dataProfile = responseProfile.data.data
+              const user = {
+                idUser: dataProfile.idUser,
+                username: dataProfile.username,
+                email: dataProfile.email,
+                fullname: dataProfile.fullname,
+                phone: dataProfile.phone,
+                role: dataProfile.role,
+                token: response.data.token
+              }
+              await dispatch({ type: 'LOGIN', user })
+              navigation.reset({ index: 0, routes: [{ name: 'UserHome' }] })
+            }
+          } catch (e) {
+            if (e.response.data?.message) {
+              ToastAndroid.show(e.response.data.message, ToastAndroid.LONG)
+            } else {
+              ToastAndroid.show('Something went wrong', ToastAndroid.LONG)
+            }
+          }
+        }
+      } catch (e) {
+        if (e.response.data?.message) {
+          ToastAndroid.show(e.response.data.message, ToastAndroid.LONG)
+        } else {
+          ToastAndroid.show('Something went wrong', ToastAndroid.LONG)
+        }
+      }
+      await dispatch({ type: 'SET_LOADING', value: false })
+    } else {
+      ToastAndroid.show('Please fill the username and password form above', ToastAndroid.LONG)
+    }
+  }
 
   return (
     <View style={styles.page}>
@@ -22,6 +86,7 @@ const Login = () => {
         value={username}
         style={styles.textInput}
         placeholder='Username'
+        autoCapitalize='none'
         onChangeText={(value) => setUsername(value)}
       />
       <Gap height={20}/>
@@ -30,6 +95,7 @@ const Login = () => {
           value={password}
           style={styles.textInputPassword}
           placeholder='Password'
+          autoCapitalize='none'
           secureTextEntry={hidden}
           onChangeText={(value) => setPassword(value)}
         />
@@ -38,7 +104,7 @@ const Login = () => {
         </TouchableOpacity>
       </View>
       <View style={styles.spacer}/>
-      <Button label='LOGIN' onPress={() => navigation.reset({ index: 0, routes: [{ name: 'UserHome' }] })}/>
+      <Button label='LOGIN' onPress={onSubmit}/>
     </View>
   )
 }

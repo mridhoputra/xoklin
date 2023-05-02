@@ -16,6 +16,7 @@ const UserOrderHistory = () => {
       <Tab.Navigator
         style={styles.tabNavigatorStyle}
         screenOptions={{
+          tabBarPressColor: 'transparent',
           tabBarStyle: styles.tabBarStyle,
           tabBarIconStyle: styles.tabBarIconStyle,
           tabBarItemStyle: styles.tabBarItemStyle,
