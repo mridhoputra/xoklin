@@ -25,6 +25,9 @@ const UserProfile = () => {
             await dispatch({
               type: 'LOGOUT'
             })
+            await dispatch({
+              type: 'CLEAR_CART'
+            })
             navigation.reset({ index: 0, routes: [{ name: 'WelcomeScreen' }] })
           }
         }
