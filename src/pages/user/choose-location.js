@@ -9,6 +9,7 @@ import { GOOGLE_MAPS_API_KEY } from '@env'
 import { Colors } from '../../assets'
 import Button from '../../components/button'
 import axios from 'axios'
+import Gap from '../../components/gap'
 
 const ChooseLocation = () => {
   const mapRef = useRef(null)
@@ -98,7 +99,7 @@ const ChooseLocation = () => {
           <Image source={require('../../assets/images/icon_back.png')} style={styles.btnBack}/>
         </TouchableOpacity>
         <Text style={styles.title}>PIN ON MAP</Text>
-        <View />
+        <Gap width={10} />
       </View>
       <MapView
         ref={mapRef}

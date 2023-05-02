@@ -13,6 +13,7 @@ import { XOKLIN_ENDPOINT } from '@env'
 const CardDetail = (props) => {
   const { dataOrder } = props.route.params ?? {}
   const { userData } = useSelector(state => state.UserReducer)
+  const { cartData } = useSelector(state => state.CartReducer)
 
   const dispatch = useDispatch()
   const navigation = useNavigation()
@@ -42,6 +43,7 @@ const CardDetail = (props) => {
       await dispatch({ type: 'SET_LOADING', value: true })
       const response = await axios.post(`${XOKLIN_ENDPOINT}/orders`, body, header)
       if (response.status === 200) {
+        deleteCart()
         toggleModalVisibility()
       }
       await dispatch({ type: 'SET_LOADING', value: false })
@@ -53,6 +55,12 @@ const CardDetail = (props) => {
         ToastAndroid.show('Something went wrong', ToastAndroid.LONG)
       }
     }
+  }
+
+  const deleteCart = async () => {
+    const currentCartData = cartData
+    const modifiedCartData = currentCartData.filter(data => data.id !== dataOrder.id)
+    await dispatch({ type: 'SET_CART', cart: modifiedCartData })
   }
 
   const navigateToSeeLocation = () => {
@@ -76,7 +84,7 @@ const CardDetail = (props) => {
           <Image source={require('../../assets/images/icon_back.png')} style={styles.btnBack}/>
         </TouchableOpacity>
         <Text style={styles.title}>CART DETAILS</Text>
-        <View />
+        <Gap width={10} />
       </View>
       <View style={styles.profile}>
         <View style={styles.containerProfile}>

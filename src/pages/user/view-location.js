@@ -5,6 +5,7 @@ import { useNavigation } from '@react-navigation/native'
 import React from 'react'
 
 import { Colors } from '../../assets'
+import Gap from '../../components/gap'
 
 const ViewLocation = (props) => {
   const navigation = useNavigation()
@@ -18,7 +19,7 @@ const ViewLocation = (props) => {
           <Image source={require('../../assets/images/icon_back.png')} style={styles.btnBack}/>
         </TouchableOpacity>
         <Text style={styles.title}>VIEW LOCATION</Text>
-        <View />
+        <Gap width={10} />
       </View>
       <MapView
         region={{

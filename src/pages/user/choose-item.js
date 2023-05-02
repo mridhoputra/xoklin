@@ -65,6 +65,9 @@ const ChooseItem = (props) => {
         idItem: data.idItem,
         item: data.item,
         count: 1,
+        price: data.price,
+        unit: data.unit,
+        iconUrl: data.iconUrl,
         total: data.price
       }
       setOrder(state => [...state, newItem])
@@ -104,6 +107,7 @@ const ChooseItem = (props) => {
 
   const onComplete = () => {
     const dataOrder = {
+      id: cartData.length,
       address: coordinate.address,
       longtitude: coordinate.longitude,
       latitude: coordinate.latitude,

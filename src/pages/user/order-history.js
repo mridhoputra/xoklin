@@ -4,6 +4,7 @@ import { Colors } from '../../assets'
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs'
 import Button from '../../components/button'
 import { useNavigation } from '@react-navigation/native'
+import Gap from '../../components/gap'
 
 const Tab = createMaterialTopTabNavigator()
 
@@ -17,7 +18,7 @@ const UserOrderHistory = () => {
           <Image source={require('../../assets/images/icon_back.png')} style={styles.btnBack}/>
         </TouchableOpacity>
         <Text style={styles.title}>CART</Text>
-        <View />
+        <Gap width={10} />
       </View>
       <Tab.Navigator
         style={styles.tabNavigatorStyle}
