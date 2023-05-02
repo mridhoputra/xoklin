@@ -1,4 +1,4 @@
-import { Image, StyleSheet, Text, View } from 'react-native'
+import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React from 'react'
 import { Colors } from '../../assets'
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs'
@@ -8,10 +8,16 @@ import { useNavigation } from '@react-navigation/native'
 const Tab = createMaterialTopTabNavigator()
 
 const UserOrderHistory = () => {
+  const navigation = useNavigation()
+
   return (
     <View style={styles.page}>
       <View style={styles.header}>
-        <Text style={styles.pageTitle}>ORDER HISTORY</Text>
+        <TouchableOpacity activeOpacity={0.6} onPress={() => navigation.goBack()}>
+          <Image source={require('../../assets/images/icon_back.png')} style={styles.btnBack}/>
+        </TouchableOpacity>
+        <Text style={styles.title}>CART</Text>
+        <View />
       </View>
       <Tab.Navigator
         style={styles.tabNavigatorStyle}
@@ -114,10 +120,16 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.white
   },
   header: {
-    alignSelf: 'center',
-    marginVertical: 18
+    padding: 16,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between'
   },
-  pageTitle: {
+  btnBack: {
+    width: 10,
+    height: 18
+  },
+  title: {
     fontFamily: 'Nunito-Bold',
     fontSize: 18,
     color: Colors.primary
