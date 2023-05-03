@@ -32,7 +32,7 @@ const UserOrderCancelled = () => {
     }
     try {
       setIsLoading(true)
-      const response = await axios.get(`${XOKLIN_ENDPOINT}/orders?status=cancelled`, header)
+      const response = await axios.get(`${XOKLIN_ENDPOINT}/orders?status=cancel`, header)
       if (response.status === 200) {
         setDataOrders(response.data?.data)
         setPage(response.data?.page)
@@ -60,7 +60,7 @@ const UserOrderCancelled = () => {
     if (page < totalPage) {
       try {
         setIsLoadingMore(true)
-        const response = await axios.get(`${XOKLIN_ENDPOINT}/orders?status=cancelled&page=${page + 1}`, header)
+        const response = await axios.get(`${XOKLIN_ENDPOINT}/orders?status=cancel&page=${page + 1}`, header)
         if (response.status === 200) {
           let tempData = []
           tempData = dataOrders.concat(response.data.data)

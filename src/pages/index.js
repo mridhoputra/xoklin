@@ -107,8 +107,11 @@ const RootNavigation = () => {
     if (isLogin) {
       if (userData.role === 'ROLE_USER') {
         navigation.reset({ index: 0, routes: [{ name: 'UserHome' }] })
-      } else if (userData.role === 'ROLE_ADMIN') {
-        ToastAndroid.show('ADMIN', ToastAndroid.LONG)
+      } else if (userData.role === 'ROLE_ADMIN' || userData.role === 'ROLE_SUPERADMIN') {
+        navigation.reset({ index: 0, routes: [{ name: 'UserHome' }] })
+        ToastAndroid.show(userData.role, ToastAndroid.LONG)
+      } else {
+        ToastAndroid.show('ROLE NOT HANDLED', ToastAndroid.LONG)
       }
     } else {
       navigation.reset({ index: 0, routes: [{ name: 'WelcomeScreen' }] })
