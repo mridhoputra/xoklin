@@ -15,6 +15,7 @@ import CartDetail from './user/cart-detail'
 import UserProfile from './user/profile'
 import ViewLocation from './user/view-location'
 import Cart from './user/cart'
+import UserOrderDetail from './user/order-detail'
 
 const Stack = createStackNavigator()
 
@@ -73,6 +74,10 @@ const Navigation = () => {
         <Stack.Screen
           name='UserViewLocation'
           component={ViewLocation}
+        />
+        <Stack.Screen
+          name='UserOrderDetail'
+          component={UserOrderDetail}
         />
       </Stack.Navigator>
     </NavigationContainer>

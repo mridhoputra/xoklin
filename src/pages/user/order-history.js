@@ -1,10 +1,12 @@
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React from 'react'
+import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { Colors } from '../../assets'
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs'
-import Button from '../../components/button'
 import { useNavigation } from '@react-navigation/native'
 import Gap from '../../components/gap'
+import UserOrderOngoing from './order-ongoing'
+import UserOrderCompleted from './order-completed'
+import UserOrderCancelled from './order-cancelled'
 
 const Tab = createMaterialTopTabNavigator()
 
@@ -17,7 +19,7 @@ const UserOrderHistory = () => {
         <TouchableOpacity activeOpacity={0.6} onPress={() => navigation.goBack()}>
           <Image source={require('../../assets/images/icon_back.png')} style={styles.btnBack}/>
         </TouchableOpacity>
-        <Text style={styles.title}>CART</Text>
+        <Text style={styles.title}>ORDER HISTORY</Text>
         <Gap width={10} />
       </View>
       <Tab.Navigator
@@ -36,79 +38,41 @@ const UserOrderHistory = () => {
       >
         <Tab.Screen
           name='OngoingTab'
-          component={OngoingTab}
+          component={UserOrderOngoing}
           options={{
             tabBarLabel: 'Ongoing',
             tabBarIcon: ({ focused }) => (
               focused
-                ? (
-                  <Image source={require('../../assets/images/icon_ongoing_active.png')} style={styles.ongoingIcon}/>
-                )
-                : (
-                  <Image source={require('../../assets/images/icon_ongoing.png')} style={styles.ongoingIcon}/>
-                )
+                ? <Image source={require('../../assets/images/icon_ongoing_active.png')} style={styles.ongoingIcon}/>
+                : <Image source={require('../../assets/images/icon_ongoing.png')} style={styles.ongoingIcon}/>
             )
           }}
         />
         <Tab.Screen
           name='CompletedTab'
-          component={CompletedTab}
+          component={UserOrderCompleted}
           options={{
             tabBarLabel: 'Completed',
             tabBarIcon: ({ focused }) => (
               focused
-                ? (
-                  <Image source={require('../../assets/images/icon_completed_active.png')} style={styles.completedCancelledIcon}/>
-                )
-                : (
-                  <Image source={require('../../assets/images/icon_completed.png')} style={styles.completedCancelledIcon}/>
-                )
+                ? <Image source={require('../../assets/images/icon_completed_active.png')} style={styles.completedCancelledIcon}/>
+                : <Image source={require('../../assets/images/icon_completed.png')} style={styles.completedCancelledIcon}/>
             )
           }}
         />
         <Tab.Screen
           name='CancelledTab'
-          component={CancelledTab}
+          component={UserOrderCancelled}
           options={{
             tabBarLabel: 'Cancelled',
             tabBarIcon: ({ focused }) => (
               focused
-                ? (
-                  <Image source={require('../../assets/images/icon_cancelled_active.png')} style={styles.completedCancelledIcon}/>
-                )
-                : (
-                  <Image source={require('../../assets/images/icon_cancelled.png')} style={styles.completedCancelledIcon}/>
-                )
+                ? <Image source={require('../../assets/images/icon_cancelled_active.png')} style={styles.completedCancelledIcon}/>
+                : <Image source={require('../../assets/images/icon_cancelled.png')} style={styles.completedCancelledIcon}/>
             )
           }}
         />
       </Tab.Navigator>
-    </View>
-  )
-}
-
-const OngoingTab = () => {
-  const navigation = useNavigation()
-  return (
-    <View style={styles.emptyPage}>
-      <Text style={styles.labelEmptyPage}>There is no order</Text>
-      <Button label='ORDER NOW' width={160} onPress={() => navigation.navigate('UserChooseLocation')}/>
-    </View>
-  )
-}
-
-const CompletedTab = () => {
-  return (
-    <View>
-      <Text>CompletedTab</Text>
-    </View>
-  )
-}
-
-const CancelledTab = () => {
-  return (
-    <View>
-      <Text>CancelledTab</Text>
     </View>
   )
 }
@@ -124,7 +88,10 @@ const styles = StyleSheet.create({
     padding: 16,
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.border,
+    marginBottom: 8
   },
   btnBack: {
     width: 10,
@@ -168,17 +135,5 @@ const styles = StyleSheet.create({
   completedCancelledIcon: {
     width: 20,
     height: 20
-  },
-  emptyPage: {
-    flex: 1,
-    backgroundColor: Colors.white,
-    justifyContent: 'center',
-    alignItems: 'center'
-  },
-  labelEmptyPage: {
-    fontFamily: 'Nunito-Regular',
-    fontSize: 16,
-    color: Colors.textGray,
-    marginBottom: 20
   }
 })
