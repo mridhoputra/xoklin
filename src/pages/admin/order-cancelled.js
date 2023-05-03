@@ -11,7 +11,7 @@ import { formatStatus } from '../../utils/formatStatus'
 import formatRupiah from '../../utils/formatRupiah'
 import Gap from '../../components/gap'
 
-const UserOrderCompleted = () => {
+const AdminOrderCancelled = () => {
   const navigation = useNavigation()
 
   const { userData } = useSelector(state => state.UserReducer)
@@ -22,7 +22,7 @@ const UserOrderCompleted = () => {
   const [isLoading, setIsLoading] = useState(false)
   const [isLoadingMore, setIsLoadingMore] = useState(false)
 
-  const fetchCompletedOrder = async () => {
+  const fetchCancelledOrder = async () => {
     const header = {
       headers: {
         Accept: 'application/json',
@@ -32,7 +32,7 @@ const UserOrderCompleted = () => {
     }
     try {
       setIsLoading(true)
-      const response = await axios.get(`${XOKLIN_ENDPOINT}/orders?status=completed`, header)
+      const response = await axios.get(`${XOKLIN_ENDPOINT}/orders?status=cancel`, header)
       if (response.status === 200) {
         setDataOrders(response.data?.data)
         setPage(response.data?.page)
@@ -60,7 +60,7 @@ const UserOrderCompleted = () => {
     if (page < totalPage) {
       try {
         setIsLoadingMore(true)
-        const response = await axios.get(`${XOKLIN_ENDPOINT}/orders?status=completed&page=${page + 1}`, header)
+        const response = await axios.get(`${XOKLIN_ENDPOINT}/orders?status=cancel&page=${page + 1}`, header)
         if (response.status === 200) {
           let tempData = []
           tempData = dataOrders.concat(response.data.data)
@@ -84,7 +84,7 @@ const UserOrderCompleted = () => {
   }
 
   useEffect(() => {
-    fetchCompletedOrder()
+    fetchCancelledOrder()
   }, [])
 
   return (
@@ -92,7 +92,7 @@ const UserOrderCompleted = () => {
       data={dataOrders}
       refreshing={isLoading}
       onEndReached={fetchMoreData}
-      onRefresh={fetchCompletedOrder}
+      onRefresh={fetchCancelledOrder}
       onEndReachedThreshold={0.1}
       contentContainerStyle={styles.flatlist}
       ListEmptyComponent={isLoading ? <View/> : <EmptyComponent/>}
@@ -100,6 +100,10 @@ const UserOrderCompleted = () => {
       renderItem={({ item, index }) => {
         return (
           <TouchableOpacity activeOpacity={0.6} key={index} style={styles.card} onPress={() => navigateToOrderDetail(item)}>
+            <View style={styles.containerCardData}>
+              <Text style={styles.labelCard}>Name:</Text>
+              <Text style={styles.textCardBold}>{item.User?.fullname}</Text>
+            </View>
             <View style={styles.containerCardData}>
               <Text style={styles.labelCard}>Order ID:</Text>
               <Text style={styles.textCard}>{item.idOrder}</Text>
@@ -155,7 +159,7 @@ const LoadingIndicator = () => {
   )
 }
 
-export default UserOrderCompleted
+export default AdminOrderCancelled
 
 const styles = StyleSheet.create({
   flatlist: {
@@ -184,6 +188,12 @@ const styles = StyleSheet.create({
   textCard: {
     flex: 3,
     fontFamily: 'Nunito-Regular',
+    fontSize: 12,
+    color: Colors.black
+  },
+  textCardBold: {
+    flex: 3,
+    fontFamily: 'Nunito-Bold',
     fontSize: 12,
     color: Colors.black
   },

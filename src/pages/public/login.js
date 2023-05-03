@@ -55,8 +55,7 @@ const Login = () => {
               if (user.role === 'ROLE_USER') {
                 navigation.reset({ index: 0, routes: [{ name: 'UserHome' }] })
               } else if (user.role === 'ROLE_ADMIN' || user.role === 'ROLE_SUPERADMIN') {
-                navigation.reset({ index: 0, routes: [{ name: 'UserHome' }] })
-                ToastAndroid.show(user.role, ToastAndroid.LONG)
+                navigation.reset({ index: 0, routes: [{ name: 'AdminHome' }] })
               } else {
                 ToastAndroid.show('ROLE NOT HANDLED', ToastAndroid.LONG)
               }

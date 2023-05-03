@@ -109,12 +109,12 @@ const UserOrderOngoing = () => {
               <Text style={styles.textCard}>{formatDate(item.updatedAt)}</Text>
             </View>
             <View style={styles.containerCardData}>
-              <Text style={styles.labelCard}>Total Amount:</Text>
-              <Text style={styles.textCardPrimary}>{formatRupiah(item.ammount)}</Text>
-            </View>
-            <View style={styles.containerCardData}>
               <Text style={styles.labelCard}>Pickup Location:</Text>
               <Text style={styles.textCard} numberOfLines={1}>{item.address}</Text>
+            </View>
+            <View style={styles.containerCardData}>
+              <Text style={styles.labelCard}>Total Amount:</Text>
+              <Text style={styles.textCardPrimary}>{formatRupiah(item.ammount)}</Text>
             </View>
             <View style={styles.border}/>
             <View style={styles.containerCardStatus}>

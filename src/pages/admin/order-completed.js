@@ -11,7 +11,7 @@ import { formatStatus } from '../../utils/formatStatus'
 import formatRupiah from '../../utils/formatRupiah'
 import Gap from '../../components/gap'
 
-const UserOrderCompleted = () => {
+const AdminOrderCompleted = () => {
   const navigation = useNavigation()
 
   const { userData } = useSelector(state => state.UserReducer)
@@ -101,6 +101,10 @@ const UserOrderCompleted = () => {
         return (
           <TouchableOpacity activeOpacity={0.6} key={index} style={styles.card} onPress={() => navigateToOrderDetail(item)}>
             <View style={styles.containerCardData}>
+              <Text style={styles.labelCard}>Name:</Text>
+              <Text style={styles.textCardBold}>{item.User?.fullname}</Text>
+            </View>
+            <View style={styles.containerCardData}>
               <Text style={styles.labelCard}>Order ID:</Text>
               <Text style={styles.textCard}>{item.idOrder}</Text>
             </View>
@@ -155,7 +159,7 @@ const LoadingIndicator = () => {
   )
 }
 
-export default UserOrderCompleted
+export default AdminOrderCompleted
 
 const styles = StyleSheet.create({
   flatlist: {
@@ -184,6 +188,12 @@ const styles = StyleSheet.create({
   textCard: {
     flex: 3,
     fontFamily: 'Nunito-Regular',
+    fontSize: 12,
+    color: Colors.black
+  },
+  textCardBold: {
+    flex: 3,
+    fontFamily: 'Nunito-Bold',
     fontSize: 12,
     color: Colors.black
   },

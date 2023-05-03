@@ -16,6 +16,13 @@ import UserProfile from './user/profile'
 import ViewLocation from './user/view-location'
 import Cart from './user/cart'
 import UserOrderDetail from './user/order-detail'
+import AdminHome from './admin/home'
+import AdminProfile from './admin/profile'
+import ItemManagement from './admin/item-management'
+import CreateUser from './admin/create-user'
+import UserManagement from './admin/user-management'
+import Report from './admin/report'
+import AdminOrders from './admin/orders'
 
 const Stack = createStackNavigator()
 
@@ -79,6 +86,35 @@ const Navigation = () => {
           name='UserOrderDetail'
           component={UserOrderDetail}
         />
+        {/* admin */}
+        <Stack.Screen
+          name='AdminHome'
+          component={AdminHome}
+        />
+        <Stack.Screen
+          name='AdminOrders'
+          component={AdminOrders}
+        />
+        <Stack.Screen
+          name='ItemManagement'
+          component={ItemManagement}
+        />
+        <Stack.Screen
+          name='CreateUser'
+          component={CreateUser}
+        />
+        <Stack.Screen
+          name='UserManagement'
+          component={UserManagement}
+        />
+        <Stack.Screen
+          name='Report'
+          component={Report}
+        />
+        <Stack.Screen
+          name='AdminProfile'
+          component={AdminProfile}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   )
@@ -108,8 +144,7 @@ const RootNavigation = () => {
       if (userData.role === 'ROLE_USER') {
         navigation.reset({ index: 0, routes: [{ name: 'UserHome' }] })
       } else if (userData.role === 'ROLE_ADMIN' || userData.role === 'ROLE_SUPERADMIN') {
-        navigation.reset({ index: 0, routes: [{ name: 'UserHome' }] })
-        ToastAndroid.show(userData.role, ToastAndroid.LONG)
+        navigation.reset({ index: 0, routes: [{ name: 'AdminHome' }] })
       } else {
         ToastAndroid.show('ROLE NOT HANDLED', ToastAndroid.LONG)
       }
