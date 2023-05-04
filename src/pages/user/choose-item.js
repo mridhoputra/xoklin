@@ -216,8 +216,8 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between'
   },
   cardIcon: {
-    width: 60,
-    height: 60
+    width: 36,
+    height: 36
   },
   containerItemDetail: {
     flex: 1,
