@@ -13,7 +13,7 @@ import ChooseLocation from './user/choose-location'
 import ChooseItem from './user/choose-item'
 import CartDetail from './user/cart-detail'
 import UserProfile from './user/profile'
-import ViewLocation from './user/view-location'
+import UserViewLocation from './user/view-location'
 import Cart from './user/cart'
 import UserOrderDetail from './user/order-detail'
 import AdminHome from './admin/home'
@@ -23,6 +23,8 @@ import CreateUser from './admin/create-user'
 import UserManagement from './admin/user-management'
 import Report from './admin/report'
 import AdminOrders from './admin/orders'
+import AdminViewLocation from './admin/view-location'
+import AdminOrderDetail from './admin/order-detail'
 
 const Stack = createStackNavigator()
 
@@ -80,7 +82,7 @@ const Navigation = () => {
         />
         <Stack.Screen
           name='UserViewLocation'
-          component={ViewLocation}
+          component={UserViewLocation}
         />
         <Stack.Screen
           name='UserOrderDetail'
@@ -94,6 +96,10 @@ const Navigation = () => {
         <Stack.Screen
           name='AdminOrders'
           component={AdminOrders}
+        />
+        <Stack.Screen
+          name='AdminOrderDetail'
+          component={AdminOrderDetail}
         />
         <Stack.Screen
           name='ItemManagement'
@@ -114,6 +120,10 @@ const Navigation = () => {
         <Stack.Screen
           name='AdminProfile'
           component={AdminProfile}
+        />
+        <Stack.Screen
+          name='AdminViewLocation'
+          component={AdminViewLocation}
         />
       </Stack.Navigator>
     </NavigationContainer>

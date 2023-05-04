@@ -12,7 +12,8 @@ const Colors = {
   backgroundSecondary: '#FAFAFA',
 
   textGray: '#828282',
-  textGrayLight: '#4F4F4F'
+  textGrayLight: '#4F4F4F',
+  textRed: '#EB5757'
 }
 
 export {

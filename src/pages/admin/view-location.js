@@ -1,16 +1,25 @@
 import PropTypes from 'prop-types'
-import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native'
+import { StyleSheet, Text, View, TouchableOpacity, Image, Linking } from 'react-native'
 import MapView, { Marker } from 'react-native-maps'
 import { useNavigation } from '@react-navigation/native'
 import React from 'react'
 
 import { Colors } from '../../assets'
 import Gap from '../../components/gap'
+import ButtonSecondary from '../../components/button-secondary'
 
-const UserViewLocation = (props) => {
+const AdminViewLocation = (props) => {
   const navigation = useNavigation()
 
   const { coordinate } = props.route.params
+
+  const navigateToGoogleMaps = async () => {
+    const url = 'geo:0,0?q='
+    const latLng = `${coordinate.latitude},${coordinate.longitude}}`
+    if (await Linking.canOpenURL(`${url}${latLng}`)) {
+      await Linking.openURL(`${url}${latLng}`)
+    }
+  }
 
   return (
     <View style={styles.page}>
@@ -42,15 +51,23 @@ const UserViewLocation = (props) => {
           <Text style={styles.locationSubtitle}>Address: {coordinate.address}</Text>
         </View>
       </View>
+      <View style={styles.containerGoogleMaps}>
+        <ButtonSecondary
+          fontSize={14}
+          paddingVertical={12}
+          label='Open Google Maps'
+          onPress={navigateToGoogleMaps}
+        />
+      </View>
     </View>
   )
 }
 
-UserViewLocation.propTypes = {
+AdminViewLocation.propTypes = {
   route: PropTypes.object
 }
 
-export default UserViewLocation
+export default AdminViewLocation
 
 const styles = StyleSheet.create({
   page: {
@@ -102,5 +119,11 @@ const styles = StyleSheet.create({
   locationSubtitle: {
     fontFamily: 'Nunito-Regulaar',
     fontSize: 12
+  },
+  containerGoogleMaps: {
+    position: 'absolute',
+    bottom: 24,
+    left: 24,
+    right: 24
   }
 })

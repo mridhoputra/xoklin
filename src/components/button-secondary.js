@@ -5,8 +5,17 @@ import { Colors } from '../assets'
 
 const ButtonSecondary = (props) => {
   return (
-    <TouchableOpacity activeOpacity={0.6} onPress={props.onPress} style={styles.container}>
-      <Text style={styles.label}>{props.label}</Text>
+    <TouchableOpacity
+      activeOpacity={0.6}
+      onPress={props.onPress}
+      style={[styles.container,
+        {
+          width: props.width ? props.width : '100%',
+          paddingVertical: props.paddingVertical ? props.paddingVertical : 16,
+          paddingHorizontal: props.paddingHorizontal ? props.paddingHorizontal : 0
+        }
+      ]}>
+      <Text style={[styles.label, { fontSize: props.fontSize ? props.fontSize : 16 }]}>{props.label}</Text>
     </TouchableOpacity>
   )
 }
@@ -15,7 +24,11 @@ export default ButtonSecondary
 
 ButtonSecondary.propTypes = {
   label: PropTypes.string,
-  onPress: PropTypes.func
+  onPress: PropTypes.func,
+  fontSize: PropTypes.number,
+  paddingVertical: PropTypes.number,
+  paddingHorizontal: PropTypes.number,
+  width: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
 }
 
 const styles = StyleSheet.create({

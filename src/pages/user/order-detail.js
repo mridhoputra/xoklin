@@ -9,7 +9,7 @@ import Gap from '../../components/gap'
 import { formatStatus } from '../../utils/formatStatus'
 import formatRupiah from '../../utils/formatRupiah'
 
-const ViewLocation = (props) => {
+const UserOrderDetail = (props) => {
   const navigation = useNavigation()
 
   const { orderDetail } = props.route.params
@@ -70,7 +70,7 @@ const ViewLocation = (props) => {
           {orderDetail.order.map((item, index) => {
             return (
               <View key={index} style={styles.containerPrice}>
-                <Text style={styles.textPrice}>{item.item} x {item.count}</Text>
+                <Text style={styles.textPrice}>{item.item} x {item.count} {item.unit}</Text>
                 <Text style={styles.textPrice}>{formatRupiah(item.total)}</Text>
               </View>
             )
@@ -94,11 +94,11 @@ const ViewLocation = (props) => {
   )
 }
 
-ViewLocation.propTypes = {
+UserOrderDetail.propTypes = {
   route: PropTypes.object
 }
 
-export default ViewLocation
+export default UserOrderDetail
 
 const styles = StyleSheet.create({
   page: {

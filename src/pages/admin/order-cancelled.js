@@ -3,7 +3,6 @@ import React, { useState, useEffect } from 'react'
 import { StyleSheet, Text, View, ToastAndroid, FlatList, ActivityIndicator, TouchableOpacity } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import { useSelector } from 'react-redux'
-import Button from '../../components/button'
 import { Colors } from '../../assets'
 import { XOKLIN_ENDPOINT } from '@env'
 import formatDate from '../../utils/formatDate'
@@ -80,7 +79,7 @@ const AdminOrderCancelled = () => {
   }
 
   const navigateToOrderDetail = async (orderDetail) => {
-    navigation.navigate({ name: 'UserOrderDetail', params: { orderDetail } })
+    navigation.navigate({ name: 'AdminOrderDetail', params: { orderDetail } })
   }
 
   useEffect(() => {
@@ -141,11 +140,9 @@ const AdminOrderCancelled = () => {
 }
 
 const EmptyComponent = () => {
-  const navigation = useNavigation()
   return (
     <View style={styles.emptyPage}>
       <Text style={styles.labelEmptyPage}>There is no order</Text>
-      <Button label='ORDER NOW' width={160} onPress={() => navigation.navigate('UserChooseLocation')}/>
     </View>
   )
 }
