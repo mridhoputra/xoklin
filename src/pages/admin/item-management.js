@@ -78,6 +78,41 @@ const ItemManagement = () => {
     }
   }
 
+  const handleSearchItem = () => {
+    if (query !== '') {
+      fetchSearchItem()
+    } else {
+      fetchAllItems()
+    }
+  }
+
+  const fetchSearchItem = async () => {
+    const header = {
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${userData.token}`
+      }
+    }
+    try {
+      setIsLoading(true)
+      const response = await axios.get(`${XOKLIN_ENDPOINT}/items/search/${query}`, header)
+      if (response.status === 200) {
+        setDataItems(response.data.data)
+        setPage(response.data.page)
+        setPageSize(response.data.totalPage)
+      }
+      setIsLoading(false)
+    } catch (e) {
+      setIsLoading(false)
+      if (e.response.data?.message) {
+        ToastAndroid.show(e.response.data.message, ToastAndroid.LONG)
+      } else {
+        ToastAndroid.show('Something went wrong', ToastAndroid.LONG)
+      }
+    }
+  }
+
   const navigateToItemAdd = () => {
     navigation.navigate('AddItem')
   }
@@ -108,7 +143,7 @@ const ItemManagement = () => {
           onChangeText={(value) => setQuery(value)}
         />
         <Gap width={8} />
-        <TouchableOpacity activeOpacity={0.6} style={styles.containerIconSearch}>
+        <TouchableOpacity activeOpacity={0.6} style={styles.containerIconSearch} onPress={handleSearchItem}>
           <Image source={require('../../assets/images/icon_search.png')} style={styles.iconSearch}/>
         </TouchableOpacity>
       </View>

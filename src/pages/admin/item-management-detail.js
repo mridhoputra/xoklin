@@ -123,6 +123,60 @@ const ItemManagementDetail = (props) => {
     )
   }
 
+  const onDelete = () => {
+    Alert.alert(
+      'Alert',
+      'Are you sure you want to delete this item?',
+      [
+        { text: 'No', style: 'cancel' },
+        {
+          text: 'Yes',
+          style: 'default',
+          onPress: async () => {
+            const header = {
+              headers: {
+                Accept: 'application/json',
+                'Content-Type': 'multipart/form-data',
+                Authorization: `Bearer ${userData.token}`
+              }
+            }
+
+            try {
+              await dispatch({ type: 'SET_LOADING', value: true })
+
+              const response = await axios.delete(`${XOKLIN_ENDPOINT}/items/${dataItem.idItem}`, header)
+
+              if (response.status === 200) {
+                Alert.alert(
+                  'Alert',
+                  response.data.message,
+                  [
+                    {
+                      text: 'OK',
+                      style: 'default',
+                      onPress: async () => {
+                        navigation.goBack()
+                      }
+                    }
+                  ]
+                )
+              }
+              await dispatch({ type: 'SET_LOADING', value: false })
+            } catch (e) {
+              await dispatch({ type: 'SET_LOADING', value: false })
+              if (e.response.data?.message) {
+                ToastAndroid.show(e.response.data.message, ToastAndroid.LONG)
+              } else {
+                ToastAndroid.show('Something went wrong', ToastAndroid.LONG)
+              }
+            }
+          }
+        }
+      ],
+      { cancelable: true }
+    )
+  }
+
   const onSubmit = () => {
     if (item !== '' && price !== '' && unit !== '' && file !== '') {
       Alert.alert(
@@ -182,7 +236,9 @@ const ItemManagementDetail = (props) => {
           <Image source={require('../../assets/images/icon_back.png')} style={styles.btnBack}/>
         </TouchableOpacity>
         <Text style={styles.title}>UPDATE ITEM</Text>
-        <Gap width={10} />
+        <TouchableOpacity activeOpacity={0.6} style={styles.containerIconDelete} onPress={onDelete}>
+          <Image source={require('../../assets/images/icon_delete.png')} style={styles.iconDelete}/>
+        </TouchableOpacity>
       </View>
       <View style={styles.content}>
         <Text style={styles.titleContent}>You can update this item through the form below:</Text>
@@ -269,13 +325,25 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1
   },
   btnBack: {
-    width: 10,
-    height: 18
+    width: 36,
+    height: 18,
+    resizeMode: 'contain'
   },
   title: {
     fontFamily: 'Nunito-Bold',
     fontSize: 18,
     color: Colors.primary
+  },
+  containerIconDelete: {
+    width: 36,
+    height: 36,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 6
+  },
+  iconDelete: {
+    width: 24,
+    height: 24
   },
   content: {
     padding: 16
