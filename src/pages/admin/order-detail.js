@@ -51,9 +51,9 @@ const AdminOrderDetail = (props) => {
       'Alert',
       'Are you sure you want to confirm order?',
       [
-        { text: 'Tidak', style: 'cancel' },
+        { text: 'No', style: 'cancel' },
         {
-          text: 'Ya',
+          text: 'Yes',
           style: 'default',
           onPress: async () => {
             try {
@@ -95,9 +95,9 @@ const AdminOrderDetail = (props) => {
       'Alert',
       'Are you sure you want to confirm order?',
       [
-        { text: 'Tidak', style: 'cancel' },
+        { text: 'No', style: 'cancel' },
         {
-          text: 'Ya',
+          text: 'Yes',
           style: 'default',
           onPress: async () => {
             try {

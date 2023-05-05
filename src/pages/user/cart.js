@@ -73,9 +73,9 @@ const Cart = () => {
       'Alert',
       'Are you sure you want to delete?',
       [
-        { text: 'Tidak', style: 'cancel' },
+        { text: 'No', style: 'cancel' },
         {
-          text: 'Ya',
+          text: 'Yes',
           style: 'default',
           onPress: async () => {
             const currentCartData = cartData

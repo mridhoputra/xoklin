@@ -4,7 +4,6 @@ import { useNavigation } from '@react-navigation/native'
 import { Colors } from '../../assets'
 import { useDispatch, useSelector } from 'react-redux'
 import ButtonSecondary from '../../components/button-secondary'
-import Gap from '../../components/gap'
 
 const AdminProfile = () => {
   const dispatch = useDispatch()
@@ -17,9 +16,9 @@ const AdminProfile = () => {
       'Logout',
       'Are you sure you want to logout?',
       [
-        { text: 'Tidak', style: 'cancel' },
+        { text: 'No', style: 'cancel' },
         {
-          text: 'Ya',
+          text: 'Yes',
           style: 'default',
           onPress: async () => {
             await dispatch({
@@ -69,9 +68,7 @@ const AdminProfile = () => {
         </View>
       </View>
       <View style={styles.containerButton}>
-        <ButtonSecondary label='EDIT PROFILE' />
-        <Gap height={20} />
-        <ButtonSecondary label='CHANGE PASSWORD' />
+        <ButtonSecondary label='EDIT PROFILE' onPress={() => navigation.navigate('AdminEditProfile')}/>
       </View>
     </View>
   )

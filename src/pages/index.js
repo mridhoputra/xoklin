@@ -25,6 +25,9 @@ import Report from './admin/report'
 import AdminOrders from './admin/orders'
 import AdminViewLocation from './admin/view-location'
 import AdminOrderDetail from './admin/order-detail'
+import AdminEditProfile from './admin/edit-profile'
+import UserEditProfile from './user/edit-profile'
+import AddItem from './admin/item-add'
 
 const Stack = createStackNavigator()
 
@@ -73,6 +76,10 @@ const Navigation = () => {
           component={UserProfile}
         />
         <Stack.Screen
+          name='UserEditProfile'
+          component={UserEditProfile}
+        />
+        <Stack.Screen
           name='UserChooseItem'
           component={ChooseItem}
         />
@@ -106,6 +113,10 @@ const Navigation = () => {
           component={ItemManagement}
         />
         <Stack.Screen
+          name='AddItem'
+          component={AddItem}
+        />
+        <Stack.Screen
           name='CreateUser'
           component={CreateUser}
         />
@@ -120,6 +131,10 @@ const Navigation = () => {
         <Stack.Screen
           name='AdminProfile'
           component={AdminProfile}
+        />
+        <Stack.Screen
+          name='AdminEditProfile'
+          component={AdminEditProfile}
         />
         <Stack.Screen
           name='AdminViewLocation'

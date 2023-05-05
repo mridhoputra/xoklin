@@ -6169,6 +6169,11 @@
   "resolved" "https://registry.npmjs.org/react-native-gradle-plugin/-/react-native-gradle-plugin-0.71.17.tgz"
   "version" "0.71.17"
 
+"react-native-image-picker@^5.3.1":
+  "integrity" "sha512-zRCjtlE3KOeaWDM8gXzTwXfvo3ZeF2XMkHceU7CVCtKRleKxna/E4XWIPu/lXO2qlMdnSx1WvfPSbqzAX0qxpA=="
+  "resolved" "https://registry.npmjs.org/react-native-image-picker/-/react-native-image-picker-5.3.1.tgz"
+  "version" "5.3.1"
+
 "react-native-maps@^1.6.0":
   "integrity" "sha512-kaKX1cRzCmyhtN6InXiZMEmGAmah15eLP+f/8S4o2fh9KVl8T4XeRB0Gdcwxdvwuf1Yel7g8I3NbIwSr06DP2Q=="
   "resolved" "https://registry.npmjs.org/react-native-maps/-/react-native-maps-1.6.0.tgz"

@@ -22,6 +22,13 @@ const UserReducer = (state = initialState, action) => {
       isLogin: true,
       userData: action.user
     }
+  case 'EDIT_PROFILE':
+    setToAsyncStorage('userData', action.user)
+    return {
+      ...state,
+      isLogin: true,
+      userData: action.user
+    }
   case 'LOGOUT':
     clearAsyncStorage()
     return {

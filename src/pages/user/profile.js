@@ -17,9 +17,9 @@ const UserProfile = () => {
       'Logout',
       'Are you sure you want to logout?',
       [
-        { text: 'Tidak', style: 'cancel' },
+        { text: 'No', style: 'cancel' },
         {
-          text: 'Ya',
+          text: 'Yes',
           style: 'default',
           onPress: async () => {
             await dispatch({
@@ -68,9 +68,7 @@ const UserProfile = () => {
         </View>
       </View>
       <View style={styles.containerButton}>
-        <ButtonSecondary label='EDIT PROFILE' />
-        <Gap height={20} />
-        <ButtonSecondary label='CHANGE PASSWORD' />
+        <ButtonSecondary label='EDIT PROFILE' onPress={() => navigation.navigate('UserEditProfile')}/>
       </View>
     </View>
   )
