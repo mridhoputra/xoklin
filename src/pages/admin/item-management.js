@@ -82,6 +82,10 @@ const ItemManagement = () => {
     navigation.navigate('AddItem')
   }
 
+  const navigateToDetail = (item) => {
+    navigation.navigate({ name: 'ItemManagementDetail', params: { dataItem: item } })
+  }
+
   useEffect(() => {
     fetchAllItems()
   }, [])
@@ -119,7 +123,7 @@ const ItemManagement = () => {
           ListFooterComponent={isLoadingMore && <LoadingIndicator/>}
           renderItem={({ item, index }) => {
             return (
-              <TouchableOpacity activeOpacity={0.6} style={styles.card}>
+              <TouchableOpacity activeOpacity={0.6} style={styles.card} onPress={() => navigateToDetail(item)}>
                 <View style={styles.containerItem}>
                   <Text style={styles.labelItem}>Name:</Text>
                   <Text style={styles.textItem}>{item.item}</Text>

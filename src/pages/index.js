@@ -28,6 +28,7 @@ import AdminOrderDetail from './admin/order-detail'
 import AdminEditProfile from './admin/edit-profile'
 import UserEditProfile from './user/edit-profile'
 import AddItem from './admin/item-add'
+import ItemManagementDetail from './admin/item-management-detail'
 
 const Stack = createStackNavigator()
 
@@ -115,6 +116,10 @@ const Navigation = () => {
         <Stack.Screen
           name='AddItem'
           component={AddItem}
+        />
+        <Stack.Screen
+          name='ItemManagementDetail'
+          component={ItemManagementDetail}
         />
         <Stack.Screen
           name='CreateUser'

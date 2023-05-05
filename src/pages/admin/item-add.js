@@ -111,7 +111,8 @@ const AddItem = () => {
             }
           }
         }
-      ]
+      ],
+      { cancelable: true }
     )
   }
 
