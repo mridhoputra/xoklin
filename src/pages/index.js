@@ -29,6 +29,7 @@ import AdminEditProfile from './admin/edit-profile'
 import UserEditProfile from './user/edit-profile'
 import AddItem from './admin/item-add'
 import ItemManagementDetail from './admin/item-management-detail'
+import UserManagementDetail from './admin/user-management-detail'
 
 const Stack = createStackNavigator()
 
@@ -124,6 +125,10 @@ const Navigation = () => {
         <Stack.Screen
           name='CreateUser'
           component={CreateUser}
+        />
+        <Stack.Screen
+          name='UserManagementDetail'
+          component={UserManagementDetail}
         />
         <Stack.Screen
           name='UserManagement'

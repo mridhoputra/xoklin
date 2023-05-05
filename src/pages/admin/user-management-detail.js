@@ -1,5 +1,6 @@
+import PropTypes from 'prop-types'
 import axios from 'axios'
-import { Image, StyleSheet, Text, TouchableOpacity, View, TextInput, ScrollView, ToastAndroid } from 'react-native'
+import { Image, StyleSheet, Text, TouchableOpacity, View, TextInput, ScrollView, ToastAndroid, Alert } from 'react-native'
 import React, { useState } from 'react'
 import Gap from '../../components/gap'
 import { useNavigation } from '@react-navigation/native'
@@ -8,24 +9,21 @@ import Button from '../../components/button'
 import { useDispatch, useSelector } from 'react-redux'
 import { XOKLIN_ENDPOINT } from '@env'
 
-const CreateUser = () => {
+const UserManagementDetail = (props) => {
   const dispatch = useDispatch()
   const navigation = useNavigation()
 
-  const dataRole = ['ROLE_USER', 'ROLE_ADMIN']
-
+  const { dataUser } = props.route.params
   const { userData } = useSelector(state => state.UserReducer)
 
-  const [role, setRole] = useState('')
+  const dataRole = ['ROLE_USER', 'ROLE_ADMIN']
+
+  const [role, setRole] = useState(dataUser.role)
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
-  const [fullname, setFullname] = useState('')
-  const [email, setEmail] = useState('')
-  const [confirmPassword, setConfirmPassword] = useState('')
-  const [phoneNumber, setPhoneNumber] = useState('')
-  const [hidden, setHidden] = useState(true)
-  const [confirmHidden, setConfirmHidden] = useState(true)
+  const [username, setUsername] = useState(dataUser.username)
+  const [fullname, setFullname] = useState(dataUser.fullname)
+  const [email, setEmail] = useState(dataUser.email)
+  const [phoneNumber, setPhoneNumber] = useState(dataUser.phone)
 
   const toggleDropdownOpen = () => {
     setIsDropdownOpen(!isDropdownOpen)
@@ -36,54 +34,110 @@ const CreateUser = () => {
     toggleDropdownOpen()
   }
 
+  const onDelete = () => {
+    Alert.alert(
+      'Alert',
+      'Are you sure you want to delete this user?',
+      [
+        { text: 'No', style: 'cancel' },
+        {
+          text: 'Yes',
+          style: 'default',
+          onPress: async () => {
+            const header = {
+              headers: {
+                Accept: 'application/json',
+                'Content-Type': 'multipart/form-data',
+                Authorization: `Bearer ${userData.token}`
+              }
+            }
+
+            try {
+              await dispatch({ type: 'SET_LOADING', value: true })
+
+              const response = await axios.delete(`${XOKLIN_ENDPOINT}/users/${dataUser.idUser}`, header)
+
+              if (response.status === 200) {
+                Alert.alert(
+                  'Alert',
+                  response.data.message,
+                  [
+                    {
+                      text: 'OK',
+                      style: 'default',
+                      onPress: async () => {
+                        navigation.goBack()
+                      }
+                    }
+                  ]
+                )
+              }
+              await dispatch({ type: 'SET_LOADING', value: false })
+            } catch (e) {
+              await dispatch({ type: 'SET_LOADING', value: false })
+              if (e.response.data?.message) {
+                ToastAndroid.show(e.response.data.message, ToastAndroid.LONG)
+              } else {
+                ToastAndroid.show('Something went wrong', ToastAndroid.LONG)
+              }
+            }
+          }
+        }
+      ],
+      { cancelable: true }
+    )
+  }
+
   const onSubmit = async () => {
-    if (username !== '' && password !== '' && confirmPassword !== '' && fullname !== '' && email !== '' && phoneNumber !== '' && role !== '') {
-      if (password === confirmPassword) {
-        const body = {
-          fullname,
-          email,
-          username,
-          password,
-          confPassword: confirmPassword,
-          phone: phoneNumber,
-          role
-        }
-        const header = {
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${userData.token}`
-          }
-        }
-        try {
-          await dispatch({ type: 'SET_LOADING', value: true })
-
-          const response = await axios.post(`${XOKLIN_ENDPOINT}/users`, body, header)
-
-          if (response.status === 200) {
-            alert(response.data.message)
-            setFullname('')
-            setEmail('')
-            setUsername('')
-            setPassword('')
-            setConfirmPassword('')
-            setPhoneNumber('')
-            setRole('')
-          }
-          await dispatch({ type: 'SET_LOADING', value: false })
-        } catch (e) {
-          await dispatch({ type: 'SET_LOADING', value: false })
-          if (e.response.data?.message) {
-            ToastAndroid.show(e.response.data.message, ToastAndroid.LONG)
-          } else {
-            ToastAndroid.show('Something went wrong', ToastAndroid.LONG)
-          }
-        }
-      } else {
-        ToastAndroid.show('Password not match', ToastAndroid.LONG)
+    if (username !== '' && fullname !== '' && email !== '' && phoneNumber !== '' && role !== '') {
+      const body = {
+        fullname,
+        email,
+        username,
+        phone: phoneNumber,
+        role
       }
+      const header = {
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${userData.token}`
+        }
+      }
+
+      Alert.alert(
+        'Alert',
+        'Are you sure you want to update this user?',
+        [
+          { text: 'No', style: 'cancel' },
+          {
+            text: 'Yes',
+            style: 'default',
+            onPress: async () => {
+              try {
+                await dispatch({ type: 'SET_LOADING', value: true })
+
+                const response = await axios.patch(`${XOKLIN_ENDPOINT}/users/${dataUser.idUser}`, body, header)
+
+                if (response.status === 200) {
+                  alert(response.data.message)
+                }
+                await dispatch({ type: 'SET_LOADING', value: false })
+              } catch (e) {
+                await dispatch({ type: 'SET_LOADING', value: false })
+                if (e.response.data?.message) {
+                  ToastAndroid.show(e.response.data.message, ToastAndroid.LONG)
+                } else {
+                  ToastAndroid.show('Something went wrong', ToastAndroid.LONG)
+                }
+              }
+            }
+          }
+        ],
+        { cancelable: true }
+      )
     } else {
-      ToastAndroid.show('Please fill the username and password form above', ToastAndroid.LONG)
+      ToastAndroid.show('Password not match', ToastAndroid.LONG)
     }
   }
 
@@ -93,11 +147,13 @@ const CreateUser = () => {
         <TouchableOpacity activeOpacity={0.6} onPress={() => navigation.goBack()}>
           <Image source={require('../../assets/images/icon_back.png')} style={styles.btnBack}/>
         </TouchableOpacity>
-        <Text style={styles.title}>CREATE USER</Text>
-        <Gap width={10} />
+        <Text style={styles.title}>UPDATE USER</Text>
+        <TouchableOpacity activeOpacity={0.6} style={styles.containerIconDelete} onPress={onDelete}>
+          <Image source={require('../../assets/images/icon_delete.png')} style={styles.iconDelete}/>
+        </TouchableOpacity>
       </View>
       <View style={styles.content}>
-        <Text style={styles.titleContent}>You can create user through this form below:</Text>
+        <Text style={styles.titleContent}>You can update user through this form below:</Text>
         <TextInput
           value={fullname}
           style={styles.textInput}
@@ -121,34 +177,6 @@ const CreateUser = () => {
           placeholder='Username'
           onChangeText={(value) => setUsername(value)}
         />
-        <Gap height={20}/>
-        <View style={styles.containerPassword}>
-          <TextInput
-            value={password}
-            style={styles.textInputPassword}
-            autoCapitalize='none'
-            placeholder='Password'
-            secureTextEntry={hidden}
-            onChangeText={(value) => setPassword(value)}
-          />
-          <TouchableOpacity activeOpacity={0.6} onPress={() => setHidden(!hidden)}>
-            <Image source={hidden ? require('../../assets/images/icon_eye_disabled.png') : require('../../assets/images/icon_eye_enabled.png')} style={styles.iconEye}/>
-          </TouchableOpacity>
-        </View>
-        <Gap height={20} />
-        <View style={styles.containerPassword}>
-          <TextInput
-            value={confirmPassword}
-            style={styles.textInputPassword}
-            autoCapitalize='none'
-            placeholder='Confirm Password'
-            secureTextEntry={confirmHidden}
-            onChangeText={(value) => setConfirmPassword(value)}
-          />
-          <TouchableOpacity activeOpacity={0.6} onPress={() => setConfirmHidden(!confirmHidden)}>
-            <Image source={confirmHidden ? require('../../assets/images/icon_eye_disabled.png') : require('../../assets/images/icon_eye_enabled.png')} style={styles.iconEye}/>
-          </TouchableOpacity>
-        </View>
         <Gap height={20}/>
         <TextInput
           value={phoneNumber}
@@ -182,13 +210,17 @@ const CreateUser = () => {
       </View>
       <View style={styles.spacer} />
       <View style={styles.containerBtn}>
-        <Button label='CREATE USER' onPress={onSubmit}/>
+        <Button label='UPDATE USER' onPress={onSubmit}/>
       </View>
     </ScrollView>
   )
 }
 
-export default CreateUser
+UserManagementDetail.propTypes = {
+  route: PropTypes.object
+}
+
+export default UserManagementDetail
 
 const styles = StyleSheet.create({
   page: {
@@ -204,13 +236,25 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1
   },
   btnBack: {
-    width: 10,
-    height: 18
+    width: 36,
+    height: 18,
+    resizeMode: 'contain'
   },
   title: {
     fontFamily: 'Nunito-Bold',
     fontSize: 18,
     color: Colors.primary
+  },
+  containerIconDelete: {
+    width: 36,
+    height: 36,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 6
+  },
+  iconDelete: {
+    width: 24,
+    height: 24
   },
   content: {
     padding: 16
@@ -229,25 +273,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
     paddingVertical: 12,
     paddingHorizontal: 16
-  },
-  containerPassword: {
-    borderWidth: 1,
-    borderRadius: 8,
-    borderColor: '#D0DBEA',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: 2,
-    paddingHorizontal: 8
-  },
-  textInputPassword: {
-    fontFamily: 'Nunito-SemiBold',
-    fontSize: 14,
-    flex: 1
-  },
-  iconEye: {
-    width: 24,
-    height: 24
   },
   dropdown: {
     borderWidth: 1,
