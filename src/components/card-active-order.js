@@ -6,7 +6,7 @@ import Gap from './gap'
 
 const CardActiveOrder = (props) => {
   return (
-    <TouchableOpacity activeOpacity={0.6} style={styles.container}>
+    <TouchableOpacity activeOpacity={0.6} style={styles.container} onPress={props.onPress}>
       <Image source={props.image} style={styles.image}/>
       <View style={styles.containerDetail}>
         <Text style={styles.id}>{props.id}</Text>
@@ -20,8 +20,9 @@ const CardActiveOrder = (props) => {
 }
 
 CardActiveOrder.propTypes = {
-  image: PropTypes.number,
+  image: PropTypes.object,
   id: PropTypes.string,
+  onPress: PropTypes.func,
   orders: PropTypes.string,
   status: PropTypes.string
 }

@@ -1,32 +1,57 @@
-import React from 'react'
-import moment from 'moment'
-import { ImageBackground, ScrollView, StyleSheet, Text, View } from 'react-native'
-import { Colors } from '../../assets'
+import axios from 'axios'
+import React, { useState, useEffect } from 'react'
+import { ImageBackground, ScrollView, StyleSheet, Text, View, ToastAndroid, ActivityIndicator } from 'react-native'
+import { useNavigation } from '@react-navigation/native'
+
 import Menu from '../../components/menu'
 import Gap from '../../components/gap'
+import { Colors } from '../../assets'
+import { XOKLIN_ENDPOINT, XOKLIN_URL } from '@env'
+import formatGreeting from '../../utils/formatGreeting'
 import CardActiveOrder from '../../components/card-active-order'
-import { useNavigation } from '@react-navigation/native'
 import { useSelector } from 'react-redux'
+import { formatStatus } from '../../utils/formatStatus'
 
 const UserHome = () => {
   const { userData } = useSelector(state => state.UserReducer)
 
   const navigation = useNavigation()
 
-  const formatGreeting = () => {
-    const currentHour = moment().format('HH')
-    if (currentHour >= 5 && currentHour < 11) {
-      return 'Good Morning,'
-    } else if (currentHour >= 11 && currentHour < 15) {
-      return 'Good Afternoon,'
-    } else if (currentHour >= 15 && currentHour < 18) {
-      return 'Good Afternoon,'
-    } else if (currentHour >= 18 || currentHour < 5) {
-      return 'Good Evening,'
-    } else {
-      return 'Hello'
+  const [dataOrders, setDataOrders] = useState([])
+  const [isLoading, setIsLoading] = useState(false)
+
+  const fetchOngoingOrder = async () => {
+    const header = {
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${userData.token}`
+      }
+    }
+    try {
+      setIsLoading(true)
+      const response = await axios.get(`${XOKLIN_ENDPOINT}/orders?status=ongoing`, header)
+      if (response.status === 200) {
+        setDataOrders(response.data?.data)
+      }
+      setIsLoading(false)
+    } catch (e) {
+      setIsLoading(false)
+      if (e.response.data?.message) {
+        ToastAndroid.show(e.response.data.message, ToastAndroid.LONG)
+      } else {
+        ToastAndroid.show('Something went wrong', ToastAndroid.LONG)
+      }
     }
   }
+
+  const navigateToOrderDetail = async (orderDetail) => {
+    navigation.navigate({ name: 'UserOrderDetail', params: { orderDetail } })
+  }
+
+  useEffect(() => {
+    fetchOngoingOrder()
+  }, [])
 
   return (
     <ScrollView style={styles.page}>
@@ -68,18 +93,39 @@ const UserHome = () => {
       <View style={styles.containerActiveOrders}>
         <Text style={styles.titleActiveOrders}>Active Orders</Text>
         <Gap height={16}/>
-        <CardActiveOrder
-          image={require('../../assets/images/icon_shirt.png')}
-          id='#102452'
-          orders='2x Shirt, 1x T-Shirt'
-          status='Ongoing'
-        />
-        <CardActiveOrder
-          image={require('../../assets/images/icon_tshirt.png')}
-          id='#102453'
-          orders='2kg of total weight'
-          status='Ongoing'
-        />
+        {isLoading
+          ? (
+            <View style={styles.containerLoading}>
+              <ActivityIndicator size='large' />
+              <Text style={styles.textLoading}>Loading...</Text>
+            </View>
+          )
+          : (
+            dataOrders.length > 0
+              ? (
+                <View>
+                  <CardActiveOrder
+                    image={{ uri: `${XOKLIN_URL}${dataOrders[0].order[0].iconUrl}` }}
+                    id={dataOrders[0].idOrder}
+                    orders={dataOrders[0].User.fullname}
+                    status={formatStatus(dataOrders[0].status)}
+                    onPress={() => navigateToOrderDetail(dataOrders[0])}
+                  />
+                  {dataOrders.length > 1 && (
+                    <CardActiveOrder
+                      image={{ uri: `${XOKLIN_URL}${dataOrders[1].order[1].iconUrl}` }}
+                      id={dataOrders[1].idOrder}
+                      orders={dataOrders[1].User.fullname}
+                      status={formatStatus(dataOrders[1].status)}
+                      onPress={() => navigateToOrderDetail(dataOrders[1])}
+                    />
+                  )}
+                </View>
+              )
+              : (
+                <Text>There are no active orders right now.</Text>
+              )
+          )}
       </View>
     </ScrollView>
   )
@@ -124,5 +170,18 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontFamily: 'Nunito-SemiBold',
     color: Colors.black
+  },
+  spacer: {
+    flex: 1,
+    paddingVertical: 12,
+    paddingHorizontal: 16
+  },
+  containerLoading: {
+    alignItems: 'center'
+  },
+  textLoading: {
+    marginTop: 2,
+    fontSize: 10,
+    color: Colors.textGrayLight
   }
 })

@@ -137,7 +137,7 @@ const AdminOrderDetail = (props) => {
           <Text style={[styles.textStatus,
             orderStatus === 0
               ? { color: Colors.red }
-              : orderStatus === 6
+              : orderStatus === 9
                 ? { color: Colors.primary }
                 : { color: Colors.yellow }
           ]}>{formatStatus(orderStatus)}</Text>
@@ -197,7 +197,7 @@ const AdminOrderDetail = (props) => {
         </View>
       </View>
       <View style={styles.spacer}/>
-      {(orderStatus !== 0 && orderStatus !== 6) && (
+      {(orderStatus !== 0 && orderStatus !== 9) && (
         <View style={styles.containerButtonUpdate}>
           <Button
             label={formatButtonStatus(orderStatus)}

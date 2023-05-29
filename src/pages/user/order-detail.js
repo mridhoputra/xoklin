@@ -51,7 +51,7 @@ const UserOrderDetail = (props) => {
             <Text style={[styles.textStatus,
               orderDetail.status === 0
                 ? { color: Colors.red }
-                : orderDetail.status === 6
+                : orderDetail.status === 9
                   ? { color: Colors.primary }
                   : { color: Colors.yellow }
             ]}>{formatStatus(orderDetail.status)}</Text>

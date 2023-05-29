@@ -9,10 +9,16 @@ const formatStatus = (status) => {
   case 3:
     return 'Driver on the way to pick up'
   case 4:
-    return 'Laundry in progress'
+    return 'Laundry process will start soon'
   case 5:
-    return 'Ready to deliver'
+    return 'Laundry is being washed'
   case 6:
+    return 'Laundry is being dried'
+  case 7:
+    return 'Laundry is being prepared'
+  case 8:
+    return 'Delivering laundry soon'
+  case 9:
     return 'Completed'
   default:
     return 'Undefined'
@@ -30,10 +36,16 @@ const formatButtonStatus = (status) => {
   case 3:
     return 'START LAUNDRY PROCESS'
   case 4:
-    return 'DELIVER LAUNDRY'
+    return 'START WASHING LAUNDRY'
   case 5:
-    return 'COMPLETE ORDER'
+    return 'START DRIYING LAUNDRY'
   case 6:
+    return 'START PACKAGING LAUNDRY'
+  case 7:
+    return 'DELIVER LAUNDRY'
+  case 8:
+    return 'COMPLETE ORDER'
+  case 9:
     return 'COMPLETED'
   default:
     return 'Undefined'

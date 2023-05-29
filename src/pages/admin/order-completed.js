@@ -127,7 +127,7 @@ const AdminOrderCompleted = () => {
                 styles.textStatus,
                 item.status === 0
                   ? { backgroundColor: Colors.red }
-                  : item.status === 6
+                  : item.status === 9
                     ? { backgroundColor: Colors.primary }
                     : { backgroundColor: Colors.yellow }
               ]}>{formatStatus(item.status)}</Text>
